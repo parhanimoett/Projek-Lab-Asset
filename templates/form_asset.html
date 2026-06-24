@@ -1,0 +1,17 @@
+<!DOCTYPE html><html><head><title>{{ action }} Data - LAB-ASSET</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body style="background-color: #f5f7fa; justify-content: center; align-items: center; padding: 40px;">
+    <div class="card-box" style="width: 500px; border-top: 5px solid #f39c12;">
+        <h2 style="color: #f39c12; margin-top: 0;">{{ action }} Data Aset</h2>
+        <form method="POST">
+            {% if action == 'Tambah' %}
+            <label><b>Nama Barang</b></label><input type="text" name="nama_barang" required>
+            <label><b>Kategori</b></label><input type="text" name="kategori" required>
+            {% else %}<p><b>Barang Terpilih:</b> {{ asset.nama_barang }}</p>{% endif %}
+            <label><b>Jumlah Total</b></label><input type="number" name="jumlah_total" value="{{ asset.jumlah_total if asset else '' }}" required>
+            <div style="display: flex; gap: 15px;"><div style="flex: 1;"><label><b>Kondisi Baik</b></label><input type="number" name="kondisi_baik" value="{{ asset.kondisi_baik if asset else '' }}" required></div>
+            <div style="flex: 1;"><label><b>Kondisi Rusak</b></label><input type="number" name="kondisi_rusak" value="{{ asset.kondisi_rusak if asset else '' }}" required></div></div>
+            <label><b>Lokasi Penyimpanan</b></label><input type="text" name="lokasi" value="{{ asset.lokasi if asset else '' }}" required>
+            <div style="display: flex; gap: 10px; margin-top: 10px;"><button type="submit" class="btn btn-primary">Simpan Perubahan</button> <a href="/dashboard" class="btn btn-secondary" style="text-align: center; flex: 1;">Batal</a></div>
+        </form>
+    </div>
+</body></html>

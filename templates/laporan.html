@@ -1,0 +1,9 @@
+<!DOCTYPE html><html><head><title>Laporan - LAB-ASSET</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"><script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>
+<body style="background-color: #f5f7fa; justify-content: center; align-items: center; padding: 40px;">
+    <div class="card-box" style="width: 700px; border-top: 5px solid #2ecc71;"><h2 style="color: #2ecc71; margin-top: 0; text-align: center;">Ringkasan Inventaris</h2>
+        <div style="display: flex; gap: 30px; align-items: center;"><table style="flex: 1; border: 1px solid #e1e8ed;"><tr><th>Keterangan</th><th>Jumlah</th></tr><tr><td>Total Seluruh Barang</td><td><b>{{ data.total }} Unit</b></td></tr><tr><td>Aset Baik</td><td class="text-green"><b>{{ data.baik }} Unit</b></td></tr><tr><td>Aset Rusak</td><td class="text-red"><b>{{ data.rusak }} Unit</b></td></tr><tr><td>Persentase Kerusakan</td><td><b>{{ data.persentase }}%</b></td></tr></table>
+        <div style="width: 250px;"><canvas id="laporanChart"></canvas></div></div>
+        <div style="display: flex; gap: 15px; margin-top: 30px;"><a href="/export_csv" class="btn btn-success" style="flex: 1; text-align: center; text-decoration: none;">📥 Download Data (CSV)</a><a href="/dashboard" class="btn btn-primary" style="flex: 1; text-align: center; text-decoration: none;">Kembali ke Dashboard</a></div>
+    </div>
+    <script>const ctx2 = document.getElementById('laporanChart'); new Chart(ctx2, { type: 'pie', data: { labels: ['Aset Baik', 'Aset Rusak'], datasets: [{ data: [{{ data.baik }}, {{ data.rusak }}], backgroundColor: ['#2ecc71', '#e74c3c'] }] } });</script>
+</body></html>
