@@ -1,0 +1,24 @@
+<!DOCTYPE html><html><head><title>Dashboard - LAB-ASSET</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"><script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>
+<body>
+    <div class="sidebar"><div class="brand">LAB-ASSET</div>
+        <div class="user-profile">👤 <b>{{ session['username'] | capitalize }}</b><br>Role: {{ role | capitalize }} Lab</div>
+        <a href="/dashboard">🏠 Dashboard</a>{% if role == 'admin' %}<a href="/tambah">➕ Tambah Aset</a>{% endif %}
+        <a href="/laporan">📊 Laporan Inventaris</a><a href="/logout" style="margin-top: auto; border-top: 1px solid #34495e;">🚪 Logout</a>
+    </div>
+    <div class="main-content"><h2 class="page-title">DASHBOARD INVENTARIS</h2>
+        <div class="stats-container">
+            <div class="stat-card"><h3>Total Aset</h3><div class="value text-blue">{{ stats.total }} Unit</div></div>
+            <div class="stat-card"><h3>Aset Baik</h3><div class="value text-green">{{ stats.baik }} Unit</div></div>
+            <div class="stat-card"><h3>Aset Rusak</h3><div class="value text-red">{{ stats.rusak }} Unit</div></div>
+            <div class="stat-card" style="display: flex; justify-content: center; align-items: center; padding: 5px;"><canvas id="kerusakanChart" style="max-height: 90px;"></canvas></div>
+        </div>
+        <div class="card-box" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;">
+            <form method="POST" style="margin: 0; display: flex; gap: 10px; width: 100%; align-items: center;"><b>Cari Aset:</b><select name="kategori_cari" style="margin: 0; width: 200px;"><option value="nama">Nama Barang</option><option value="lokasi">Lokasi Penyimpanan</option></select><input type="text" name="kata_kunci" placeholder="Masukkan kata kunci..." style="margin: 0; flex: 1;" required><button type="submit" class="btn btn-primary" style="width: auto;">Cari</button><a href="/dashboard" class="btn btn-secondary" style="text-decoration: none;">Reset</a></form>
+        </div>
+        <div class="card-box"><h3 style="margin-top: 0;">Daftar Data Aset</h3><table><tr><th>ID</th><th>Nama Barang</th><th>Kategori</th><th>Total</th><th>Baik</th><th>Rusak</th><th>Lokasi</th><th>Aksi</th></tr>
+                {% for a in assets %}<tr><td>{{ a.id }}</td><td><b>{{ a.nama_barang }}</b></td><td>{{ a.kategori }}</td><td>{{ a.jumlah_total }}</td><td class="text-green">{{ a.kondisi_baik }}</td><td class="text-red">{{ a.kondisi_rusak }}</td><td>{{ a.lokasi }}</td>
+                <td><a href="/update/{{ a.id }}" class="btn btn-warning">✎ Edit</a>{% if role == 'admin' %} <a href="/hapus/{{ a.id }}" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">🗑 Hapus</a>{% endif %}</td></tr>{% endfor %}
+            </table></div>
+    </div>
+    <script>const ctx = document.getElementById('kerusakanChart'); new Chart(ctx, { type: 'pie', data: { labels: ['Baik', 'Rusak'], datasets: [{ data: [{{ stats.baik }}, {{ stats.rusak }}], backgroundColor: ['#2ecc71', '#e74c3c'], borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } } });</script>
+</body></html>
