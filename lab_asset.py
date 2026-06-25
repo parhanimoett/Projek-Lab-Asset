@@ -37,5 +37,15 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
+    if 'username' not in session: return redirect(url_for('login'))
+    if request.method == 'POST':
+        assets = db.search_assets(request.form['kategori_cari'], request.form['kata_kunci'])
+    else:
+        assets = db.get_all_assets()
+    stats = db.get_laporan_data() 
+    return render_template('dashboard.html', role=session['role'], assets=assets, stats=stats)
+
 if __name__ == '__main__':
     app.run(debug=True)
