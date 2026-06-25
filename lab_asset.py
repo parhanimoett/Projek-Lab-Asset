@@ -59,5 +59,26 @@ def tambah():
         return redirect(url_for('dashboard'))
     return render_template('form_aset.html', action="Tambah", asset=None)
 
+@app.route('/update/<int:id>', methods=['GET', 'POST'])
+def update(id):
+    if 'username' not in session: return redirect(url_for('login'))
+    conn = db.get_db_connection()
+    if request.method == 'POST':
+        conn.execute('UPDATE assets SET jumlah_total=?, kondisi_baik=?, kondisi_rusak=?, lokasi=? WHERE id=?', 
+                     (int(request.form['jumlah_total']), int(request.form['kondisi_baik']), int(request.form['kondisi_rusak']), request.form['lokasi'], id))
+        conn.commit()
+        return redirect(url_for('dashboard'))
+    asset = conn.execute('SELECT * FROM assets WHERE id = ?', (id,)).fetchone()
+    return render_template('form_aset.html', action="Update", asset=asset)
+
+@app.route('/hapus/<int:id>')
+def hapus(id):
+    if 'username' not in session: return redirect(url_for('login'))
+    if 'role' not in session or session['role'] != 'admin': return "Akses Ditolak."
+    conn = db.get_db_connection()
+    conn.execute('DELETE FROM assets WHERE id = ?', (id,))
+    conn.commit()
+    return redirect(url_for('dashboard'))
+
 if __name__ == '__main__':
     app.run(debug=True)
