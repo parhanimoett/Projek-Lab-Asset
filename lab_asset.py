@@ -47,5 +47,17 @@ def dashboard():
     stats = db.get_laporan_data() 
     return render_template('dashboard.html', role=session['role'], assets=assets, stats=stats)
 
+@app.route('/tambah', methods=['GET', 'POST'])
+def tambah():
+    if 'username' not in session: return redirect(url_for('login'))
+    if 'role' not in session or session['role'] != 'admin': return "Akses Ditolak."
+    if request.method == 'POST':
+        conn = db.get_db_connection()
+        conn.execute('INSERT INTO assets (nama_barang, kategori, jumlah_total, kondisi_baik, kondisi_rusak, lokasi) VALUES (?, ?, ?, ?, ?, ?)',
+                     (request.form['nama_barang'], request.form['kategori'], int(request.form['jumlah_total']), int(request.form['kondisi_baik']), int(request.form['kondisi_rusak']), request.form['lokasi']))
+        conn.commit()
+        return redirect(url_for('dashboard'))
+    return render_template('form_aset.html', action="Tambah", asset=None)
+
 if __name__ == '__main__':
     app.run(debug=True)
