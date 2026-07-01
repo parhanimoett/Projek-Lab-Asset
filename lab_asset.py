@@ -80,5 +80,11 @@ def hapus(id):
     conn.commit()
     return redirect(url_for('dashboard'))
 
+@app.route('/laporan')
+def laporan():
+    if 'username' not in session: return redirect(url_for('login'))
+    data_laporan = db.get_laporan_data()
+    return render_template('laporan.html', data=data_laporan)
+
 if __name__ == '__main__':
     app.run(debug=True)
