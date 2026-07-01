@@ -57,7 +57,7 @@ def tambah():
                      (request.form['nama_barang'], request.form['kategori'], int(request.form['jumlah_total']), int(request.form['kondisi_baik']), int(request.form['kondisi_rusak']), request.form['lokasi']))
         conn.commit()
         return redirect(url_for('dashboard'))
-    return render_template('form_aset.html', action="Tambah", asset=None)
+    return render_template('form_asset.html', action="Tambah", asset=None)
 
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
@@ -69,7 +69,7 @@ def update(id):
         conn.commit()
         return redirect(url_for('dashboard'))
     asset = conn.execute('SELECT * FROM assets WHERE id = ?', (id,)).fetchone()
-    return render_template('form_aset.html', action="Update", asset=asset)
+    return render_template('form_asset.html', action="Update", asset=asset)
 
 @app.route('/hapus/<int:id>')
 def hapus(id):
