@@ -51,23 +51,63 @@ def dashboard():
 def tambah():
     if 'username' not in session: return redirect(url_for('login'))
     if 'role' not in session or session['role'] != 'admin': return "Akses Ditolak."
+    
     if request.method == 'POST':
+        nama_barang = request.form['nama_barang']
+        kategori = request.form['kategori']
+        jumlah_total = int(request.form['jumlah_total'])
+        kondisi_baik = int(request.form['kondisi_baik'])
+        kondisi_rusak = int(request.form['kondisi_rusak'])
+        lokasi = request.form['lokasi']
+
+        # Validasi: Tidak boleh minus
+        if jumlah_total < 0 or kondisi_baik < 0 or kondisi_rusak < 0:
+            flash('Gagal: Jumlah barang dan kondisi tidak boleh minus!')
+            return render_template('form_asset.html', action="Tambah", asset=request.form)
+        
+        # Validasi: Baik + Rusak harus sama dengan Total
+        if (kondisi_baik + kondisi_rusak) != jumlah_total:
+            flash('Gagal: Jumlah kondisi baik dan rusak harus sama dengan Total Barang!')
+            return render_template('form_asset.html', action="Tambah", asset=request.form)
+
         conn = db.get_db_connection()
         conn.execute('INSERT INTO assets (nama_barang, kategori, jumlah_total, kondisi_baik, kondisi_rusak, lokasi) VALUES (?, ?, ?, ?, ?, ?)',
-                     (request.form['nama_barang'], request.form['kategori'], int(request.form['jumlah_total']), int(request.form['kondisi_baik']), int(request.form['kondisi_rusak']), request.form['lokasi']))
+                     (nama_barang, kategori, jumlah_total, kondisi_baik, kondisi_rusak, lokasi))
         conn.commit()
         return redirect(url_for('dashboard'))
+        
     return render_template('form_asset.html', action="Tambah", asset=None)
 
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
     if 'username' not in session: return redirect(url_for('login'))
     conn = db.get_db_connection()
+    
     if request.method == 'POST':
+        jumlah_total = int(request.form['jumlah_total'])
+        kondisi_baik = int(request.form['kondisi_baik'])
+        kondisi_rusak = int(request.form['kondisi_rusak'])
+        lokasi = request.form['lokasi']
+
+        # Validasi: Tidak boleh minus
+        if jumlah_total < 0 or kondisi_baik < 0 or kondisi_rusak < 0:
+            flash('Gagal: Jumlah barang dan kondisi tidak boleh minus!')
+            asset_temp = request.form.to_dict()
+            asset_temp['id'] = id
+            return render_template('form_asset.html', action="Update", asset=asset_temp)
+        
+        # Validasi: Baik + Rusak harus sama dengan Total
+        if (kondisi_baik + kondisi_rusak) != jumlah_total:
+            flash('Gagal: Jumlah kondisi baik dan rusak harus sama dengan Total Barang!')
+            asset_temp = request.form.to_dict()
+            asset_temp['id'] = id
+            return render_template('form_asset.html', action="Update", asset=asset_temp)
+
         conn.execute('UPDATE assets SET jumlah_total=?, kondisi_baik=?, kondisi_rusak=?, lokasi=? WHERE id=?', 
-                     (int(request.form['jumlah_total']), int(request.form['kondisi_baik']), int(request.form['kondisi_rusak']), request.form['lokasi'], id))
+                     (jumlah_total, kondisi_baik, kondisi_rusak, lokasi, id))
         conn.commit()
         return redirect(url_for('dashboard'))
+        
     asset = conn.execute('SELECT * FROM assets WHERE id = ?', (id,)).fetchone()
     return render_template('form_asset.html', action="Update", asset=asset)
 
