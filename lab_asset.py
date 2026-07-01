@@ -86,5 +86,18 @@ def laporan():
     data_laporan = db.get_laporan_data()
     return render_template('laporan.html', data=data_laporan)
 
+@app.route('/export_csv')
+def export_csv():
+    if 'username' not in session: return redirect(url_for('login'))
+    assets = db.get_all_assets()
+    si = StringIO()
+    cw = csv.writer(si)
+    cw.writerow(['ID', 'Nama Barang', 'Kategori', 'Jumlah Total', 'Kondisi Baik', 'Kondisi Rusak', 'Lokasi'])
+    for a in assets:
+        cw.writerow([a['id'], a['nama_barang'], a['kategori'], a['jumlah_total'], a['kondisi_baik'], a['kondisi_rusak'], a['lokasi']])
+    output = Response(si.getvalue(), mimetype='text/csv')
+    output.headers["Content-Disposition"] = "attachment; filename=laporan_aset.csv"
+    return output
+
 if __name__ == '__main__':
     app.run(debug=True)
