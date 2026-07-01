@@ -58,3 +58,26 @@ table { width: 100%; border-collapse: collapse; margin-top: 10px; }
 th, td { padding: 12px 15px; border-bottom: 1px solid #e1e8ed; text-align: left; }
 th { background-color: #f8f9fa; color: #2c3e50; font-weight: bold; }
 tr:hover { background-color: #f1f4f6; }
+
+/* =========================================
+   PENGATURAN IKON (FONT AWESOME)
+========================================= */
+/* Penyesuaian ikon pada menu sidebar */
+.sidebar a i {
+    width: 25px;         /* Memastikan semua ikon lebarnya sama agar teks sejajar */
+    text-align: center;  /* Menempatkan ikon di tengah-tengah ruang lebarnya */
+    margin-right: 10px;  /* Jarak antara ikon dan teks */
+    font-size: 16px;
+}
+
+/* Penyesuaian ikon pada profil user */
+.user-profile i {
+    margin-right: 8px;
+    font-size: 18px;
+    color: #9b59b6;      /* Warna ikon user (menyerupai ungu yang ada di screenshot) */
+}
+
+/* Jarak untuk ikon yang ada di dalam tombol (tombol cari, edit, hapus) */
+.btn i {
+    margin-right: 5px;
+}
